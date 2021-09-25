@@ -1,3 +1,4 @@
 # Fast Company App
-* React
-* Bootstrap
+
+- React
+- Bootstrap
