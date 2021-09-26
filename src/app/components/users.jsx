@@ -13,6 +13,8 @@ const Users = ({ users: allUsers, ...rest }) => {
     setCurrentPage(pageIndex);
   };
 
+  if (currentPage > Math.ceil(count / pageSize)) setCurrentPage((prev) => prev - 1);
+
   const users = paginate(allUsers, currentPage, pageSize);
 
   return (
