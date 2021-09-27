@@ -2,7 +2,7 @@ import React from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
 
-const Pagination = ({ itemsCount, pageSize, currentPage, onPageChange }) => {
+const Pagination = ({ itemsCount, pageSize, currentPage, onPageChange, onIncreaseCurrentPage, onDecreaseCurrentPage }) => {
   const pageCount = Math.ceil(itemsCount / pageSize);
   const pages = _.range(1, pageCount + 1);
 
@@ -11,6 +11,11 @@ const Pagination = ({ itemsCount, pageSize, currentPage, onPageChange }) => {
   return (
     <nav>
       <ul className="pagination">
+        <li className={`page-item ${currentPage === 1 && "disabled"}`}>
+          <span onClick={onDecreaseCurrentPage} className="page-link" role="button">
+            Previous
+          </span>
+        </li>
         {pages.map((page) => (
           <li
             key={page}
@@ -25,6 +30,11 @@ const Pagination = ({ itemsCount, pageSize, currentPage, onPageChange }) => {
             </span>
           </li>
         ))}
+        <li className={`page-item ${(currentPage === pageCount) && "disabled"}`}>
+          <span onClick={onIncreaseCurrentPage} className="page-link" role="button">
+            Next
+          </span>
+        </li>
       </ul>
     </nav>
   );
@@ -34,7 +44,9 @@ Pagination.propTypes = {
   itemsCount: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired
+  onPageChange: PropTypes.func.isRequired,
+  onIncreaseCurrentPage: PropTypes.func.isRequired,
+  onDecreaseCurrentPage: PropTypes.func.isRequired
 };
 
 export default Pagination;

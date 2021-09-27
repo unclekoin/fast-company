@@ -13,6 +13,9 @@ const Users = ({ users: allUsers, ...rest }) => {
     setCurrentPage(pageIndex);
   };
 
+  const decreaseCurrentPage = () => setCurrentPage((prevPage) => prevPage - 1);
+  const increaseCurrentPage = () => setCurrentPage((prevPage) => prevPage + 1);
+
   if (currentPage > Math.ceil(count / pageSize)) setCurrentPage((prev) => prev - 1);
 
   const users = paginate(allUsers, currentPage, pageSize);
@@ -56,6 +59,8 @@ const Users = ({ users: allUsers, ...rest }) => {
         pageSize={pageSize}
         currentPage={currentPage}
         onPageChange={handlePageChange}
+        onDecreaseCurrentPage={decreaseCurrentPage}
+        onIncreaseCurrentPage={increaseCurrentPage}
       />
     </>
   );
