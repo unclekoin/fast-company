@@ -2,17 +2,28 @@ import React from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
 
-const Pagination = ({ itemsCount, pageSize, currentPage, onPageChange, onIncreaseCurrentPage, onDecreaseCurrentPage }) => {
+const Pagination = ({
+  itemsCount,
+  pageSize,
+  currentPage,
+  onPageChange,
+  onIncreaseCurrentPage,
+  onDecreaseCurrentPage
+}) => {
   const pageCount = Math.ceil(itemsCount / pageSize);
   const pages = _.range(1, pageCount + 1);
 
-  if (pageCount === 1) return null;
+  if (pageCount <= 1) return null;
 
   return (
-    <nav>
+    <nav className="d-flex justify-content-center">
       <ul className="pagination">
-        <li className={`page-item ${currentPage === 1 && "disabled"}`}>
-          <span onClick={onDecreaseCurrentPage} className="page-link" role="button">
+        <li className={`page-item ${currentPage <= 1 && "disabled"}`}>
+          <span
+            onClick={onDecreaseCurrentPage}
+            className="page-link"
+            role="button"
+          >
             Previous
           </span>
         </li>
@@ -30,8 +41,12 @@ const Pagination = ({ itemsCount, pageSize, currentPage, onPageChange, onIncreas
             </span>
           </li>
         ))}
-        <li className={`page-item ${(currentPage === pageCount) && "disabled"}`}>
-          <span onClick={onIncreaseCurrentPage} className="page-link" role="button">
+        <li className={`page-item ${currentPage >= pageCount && "disabled"}`}>
+          <span
+            onClick={onIncreaseCurrentPage}
+            className="page-link"
+            role="button"
+          >
             Next
           </span>
         </li>

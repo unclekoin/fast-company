@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import api from "./api";
 import Users from "./components/users";
-import SearchStatus from "./components/search-status";
 
 const App = () => {
   const [users, setUsers] = useState(api.users.fetchAll());
@@ -18,15 +17,12 @@ const App = () => {
   };
 
   return (
-    <div className="col-lg-8 mx-auto p-3 py-md-5">
-      <main>
-        <SearchStatus length={users.length} />
-        <Users
-          users={users}
-          onDelete={handleDelete}
-          onToggleBookMark={handleToggleBookMark}
-        />
-      </main>
+    <div className="col-lg-8 mx-auto p-3 py-md-5 d-flex">
+      <Users
+        users={users}
+        onDelete={handleDelete}
+        onToggleBookMark={handleToggleBookMark}
+      />
     </div>
   );
 };
