@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "./api";
 import Users from "./components/users";
 
 const App = () => {
-  const [users, setUsers] = useState(api.users.fetchAll());
+  const [users, setUsers] = useState();
+
+  useEffect(() => {
+    api.users.fetchAll().then((data) => setUsers(data));
+  }, []);
 
   const handleDelete = (userId) => {
     setUsers((prevState) => prevState.filter((item) => item._id !== userId));
@@ -18,11 +22,15 @@ const App = () => {
 
   return (
     <div className="col-lg-8 mx-auto p-3 py-md-5 d-flex">
-      <Users
-        users={users}
-        onDelete={handleDelete}
-        onToggleBookMark={handleToggleBookMark}
-      />
+      {users ? (
+        <Users
+          users={users}
+          onDelete={handleDelete}
+          onToggleBookMark={handleToggleBookMark}
+        />
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   );
 };
