@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import User from "./user";
 import Pagination from "./pagintation";
 import GroupList from "./group-list";
 import SearchStatus from "./search-status";
 import { paginate } from "../../utils/paginate";
 import api from "../api";
+import UsersTable from "./users-table";
+import _ from "lodash";
 
 const Users = ({ users: allUsers, ...rest }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
-  const pageSize = 2;
+  const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+  const pageSize = 8;
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
@@ -29,6 +31,10 @@ const Users = ({ users: allUsers, ...rest }) => {
     setCurrentPage(pageIndex);
   };
 
+  const handleSort = (item) => {
+    setSortBy(item);
+  };
+
   const decreaseCurrentPage = () => setCurrentPage((prevPage) => prevPage - 1);
   const increaseCurrentPage = () => setCurrentPage((prevPage) => prevPage + 1);
 
@@ -41,11 +47,13 @@ const Users = ({ users: allUsers, ...rest }) => {
 
   const count = filteredUsers.length;
 
+  const sortedUsers = _.orderBy(filteredUsers, [sortBy.iter], [sortBy.order]);
+
   if (currentPage > Math.ceil(count / pageSize)) {
     setCurrentPage((prev) => prev - 1);
   }
 
-  const users = paginate(filteredUsers, currentPage, pageSize);
+  const users = paginate(sortedUsers, currentPage, pageSize);
 
   const clearFilter = () => {
     setSelectedProf();
@@ -67,38 +75,7 @@ const Users = ({ users: allUsers, ...rest }) => {
       )}
       <main>
         <SearchStatus length={count} />
-        {!!count && (
-          <table className="table">
-            <thead>
-              <tr>
-                <th className="text-center" scope="col">
-                  Имя
-                </th>
-                <th className="text-center" scope="col">
-                  Качества
-                </th>
-                <th className="text-center" scope="col">
-                  Профессия
-                </th>
-                <th className="text-center" scope="col">
-                  Встретился, раз
-                </th>
-                <th className="text-center" scope="col">
-                  Оценка
-                </th>
-                <th className="text-center" scope="col">
-                  Избранное
-                </th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <User key={user._id} {...rest} {...user} />
-              ))}
-            </tbody>
-          </table>
-        )}
+        {!!count && <UsersTable users={users} onSort={handleSort} selectedSort={sortBy} {...rest} />}
         <Pagination
           itemsCount={count}
           pageSize={pageSize}
