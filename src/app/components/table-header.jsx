@@ -3,14 +3,25 @@ import PropTypes from "prop-types";
 
 const TableHeader = ({ onSort, selectedSort, columns }) => {
   const handleSort = (item) => {
-    if (selectedSort.iter === item) {
+    if (selectedSort.path === item) {
       onSort({
         ...selectedSort,
         order: selectedSort.order === "asc" ? "desc" : "asc"
       });
     } else {
-      onSort({ iter: item, order: "asc" });
+      onSort({ path: item, order: "asc" });
     }
+  };
+
+  const renderSortArrow = (selectedSort, currentPath) => {
+    if (selectedSort.path === currentPath) {
+      if (selectedSort.order === "asc") {
+        return <i className="bi bi-caret-down-fill"></i>;
+      } else {
+        return <i className="bi bi-caret-up-fill"></i>;
+      }
+    }
+    return null;
   };
 
   return (
@@ -20,15 +31,18 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
           <th
             key={column}
             onClick={
-              columns[column].iter
-                ? () => handleSort(columns[column].iter)
+              columns[column].path
+                ? () => handleSort(columns[column].path)
                 : undefined
             }
             className="text-center"
             scope="col"
-            role={columns[column].iter && "button"}
+            role={columns[column].path && "button"}
           >
-            {columns[column].name}
+            <span className="d-flex align-items-center">
+              {columns[column].name}
+              {renderSortArrow(selectedSort, columns[column].path)}
+            </span>
           </th>
         ))}
       </tr>

@@ -8,12 +8,29 @@ import api from "../api";
 import UsersTable from "./users-table";
 import _ from "lodash";
 
-const Users = ({ users: allUsers, ...rest }) => {
+const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
-  const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+  const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
   const pageSize = 8;
+
+  const [users, setUsers] = useState();
+
+  useEffect(() => {
+    api.users.fetchAll().then((data) => setUsers(data));
+  }, []);
+
+  const handleDelete = (userId) => {
+    setUsers((prevState) => prevState.filter((item) => item._id !== userId));
+  };
+
+  const handleToggleBookMark = (id) => {
+    const newUsers = [...users];
+    const userIndex = newUsers.findIndex((user) => user._id === id);
+    newUsers[userIndex].bookmark = !users[userIndex].bookmark;
+    setUsers(newUsers);
+  };
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
@@ -38,55 +55,66 @@ const Users = ({ users: allUsers, ...rest }) => {
   const decreaseCurrentPage = () => setCurrentPage((prevPage) => prevPage - 1);
   const increaseCurrentPage = () => setCurrentPage((prevPage) => prevPage + 1);
 
-  const filteredUsers = selectedProf
-    ? allUsers.filter(
-      (user) =>
-        JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-    )
-    : allUsers;
+  if (users) {
+    const filteredUsers = selectedProf
+      ? users.filter(
+        (user) =>
+          JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+      )
+      : users;
 
-  const count = filteredUsers.length;
+    const count = filteredUsers.length;
 
-  const sortedUsers = _.orderBy(filteredUsers, [sortBy.iter], [sortBy.order]);
+    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
 
-  if (currentPage > Math.ceil(count / pageSize)) {
-    setCurrentPage((prev) => prev - 1);
-  }
+    if (currentPage > Math.ceil(count / pageSize)) {
+      setCurrentPage((prev) => prev - 1);
+    }
 
-  const users = paginate(sortedUsers, currentPage, pageSize);
+    const usersCrop = paginate(sortedUsers, currentPage, pageSize);
 
-  const clearFilter = () => {
-    setSelectedProf();
-  };
+    const clearFilter = () => {
+      setSelectedProf();
+    };
 
-  return (
-    <>
-      {professions && (
-        <div className="d-flex flex-column flex-shrink-0 me-3">
-          <GroupList
-            items={professions}
-            onItemSelect={handleProfessionSelect}
-            selectedItem={selectedProf}
+    return (
+      <>
+        {professions && (
+          <div className="d-flex flex-column flex-shrink-0 me-3">
+            <GroupList
+              items={professions}
+              onItemSelect={handleProfessionSelect}
+              selectedItem={selectedProf}
+            />
+            <button className="btn btn-secondary" onClick={clearFilter}>
+              Показать всех
+            </button>
+          </div>
+        )}
+        <main>
+          <SearchStatus length={count} />
+          {!!count && (
+            <UsersTable
+              users={usersCrop}
+              onSort={handleSort}
+              selectedSort={sortBy}
+              onDelete={handleDelete}
+              onToggleBookMark={handleToggleBookMark}
+            />
+          )}
+          <Pagination
+            itemsCount={count}
+            pageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+            onDecreaseCurrentPage={decreaseCurrentPage}
+            onIncreaseCurrentPage={increaseCurrentPage}
           />
-          <button className="btn btn-secondary" onClick={clearFilter}>
-            Показать всех
-          </button>
-        </div>
-      )}
-      <main>
-        <SearchStatus length={count} />
-        {!!count && <UsersTable users={users} onSort={handleSort} selectedSort={sortBy} {...rest} />}
-        <Pagination
-          itemsCount={count}
-          pageSize={pageSize}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-          onDecreaseCurrentPage={decreaseCurrentPage}
-          onIncreaseCurrentPage={increaseCurrentPage}
-        />
-      </main>
-    </>
-  );
+        </main>
+      </>
+    );
+  }
+  return <div>Loading...</div>;
 };
 
 Users.propTypes = {
