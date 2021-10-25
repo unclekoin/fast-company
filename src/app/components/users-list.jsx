@@ -8,7 +8,7 @@ import api from "../api";
 import UsersTable from "./users-table";
 import _ from "lodash";
 
-const Users = () => {
+const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
@@ -117,8 +117,8 @@ const Users = () => {
   return <div>Loading...</div>;
 };
 
-Users.propTypes = {
+UsersList.propTypes = {
   users: PropTypes.array
 };
 
-export default Users;
+export default UsersList;
