@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { validator } from "../../utils/validator";
 import TextField from "../components/text-field";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
 
   const handleChange = ({ target }) => {
     setData((prevState) => ({
@@ -11,8 +13,29 @@ const Login = () => {
     }));
   };
 
+  const validatorConfig = {
+    email: {
+      isRequired: { message: "Электроннная почта обязательна для заполнения" }
+    },
+    password: {
+      isRequired: { message: "Пароль обязателен для заполнения" }
+    }
+  };
+
+  useEffect(() => {
+    validate();
+  }, [data]);
+
+  const validate = () => {
+    const errors = validator(data, validatorConfig);
+    setErrors(errors);
+    return !Object.keys(errors).length;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const isValid = validate();
+    if (!isValid) return;
     console.log(data);
   };
 
@@ -23,6 +46,7 @@ const Login = () => {
         name="email"
         value={data.email}
         onChange={handleChange}
+        error={errors.email}
       />
       <TextField
         label="Пароль"
@@ -30,6 +54,7 @@ const Login = () => {
         name="password"
         value={data.password}
         onChange={handleChange}
+        error={errors.password}
       />
       <button>Отправить</button>
     </form>
