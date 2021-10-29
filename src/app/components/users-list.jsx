@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
+import _ from "lodash";
+import api from "../api";
+import { paginate } from "../../utils/paginate";
 import PropTypes from "prop-types";
 import Pagination from "./pagintation";
 import GroupList from "./group-list";
 import SearchStatus from "./search-status";
-import { paginate } from "../../utils/paginate";
-import api from "../api";
 import UsersTable from "./users-table";
-import _ from "lodash";
+import SearchField from "./search-field";
 
 const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
   const pageSize = 8;
 
   const [users, setUsers] = useState();
-
   useEffect(() => {
     api.users.fetchAll().then((data) => setUsers(data));
   }, []);
@@ -38,10 +39,11 @@ const UsersList = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedProf]);
+  }, [selectedProf, searchQuery]);
 
   const handleProfessionSelect = (item) => {
     setSelectedProf(item);
+    setSearchQuery("");
   };
 
   const handlePageChange = (pageIndex) => {
@@ -52,20 +54,29 @@ const UsersList = () => {
     setSortBy(item);
   };
 
+  const handleSearchQuery = ({ target }) => {
+    setSearchQuery(target.value);
+    setSelectedProf();
+  };
+
   const decreaseCurrentPage = () => setCurrentPage((prevPage) => prevPage - 1);
   const increaseCurrentPage = () => setCurrentPage((prevPage) => prevPage + 1);
 
   if (users) {
-    const filteredUsers = selectedProf
-      ? users.filter(
-        (user) =>
-          JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+    const foundUsers = searchQuery
+      ? users.filter((user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
-      : users;
+      : selectedProf
+        ? users.filter(
+          (user) =>
+            JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+        )
+        : users;
 
-    const count = filteredUsers.length;
+    const count = foundUsers.length;
 
-    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+    const sortedUsers = _.orderBy(foundUsers, [sortBy.path], [sortBy.order]);
 
     if (currentPage > Math.ceil(count / pageSize)) {
       setCurrentPage((prev) => prev - 1);
@@ -75,10 +86,11 @@ const UsersList = () => {
 
     const clearFilter = () => {
       setSelectedProf();
+      setSearchQuery("");
     };
 
     return (
-      <>
+      <div className="col-lg-8 mx-auto p-3 py-md-5 d-flex">
         {professions && (
           <div className="d-flex flex-column flex-shrink-0 me-3">
             <GroupList
@@ -93,6 +105,11 @@ const UsersList = () => {
         )}
         <main>
           <SearchStatus length={count} />
+          <SearchField
+            onChange={handleSearchQuery}
+            value={searchQuery}
+            placeholder="Найти..."
+          />
           {!!count && (
             <UsersTable
               users={usersCrop}
@@ -111,7 +128,7 @@ const UsersList = () => {
             onIncreaseCurrentPage={increaseCurrentPage}
           />
         </main>
-      </>
+      </div>
     );
   }
   return <div>Loading...</div>;

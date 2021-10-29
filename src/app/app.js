@@ -9,7 +9,7 @@ const App = () => {
   return (
     <>
       <Navbar />
-      <div className="col-lg-8 mx-auto p-3 py-md-5 d-flex">
+      <div>
         <Switch>
           <Route path="/users/:userId?" component={Users} />
           <Route path="/login" component={Login} />

@@ -15,10 +15,18 @@ const Login = () => {
 
   const validatorConfig = {
     email: {
-      isRequired: { message: "Электроннная почта обязательна для заполнения" }
+      isRequired: { message: "Электроннная почта обязательна для заполнения" },
+      isEmail: { message: "Некорректно введен адрес электронной почты" }
     },
     password: {
-      isRequired: { message: "Пароль обязателен для заполнения" }
+      isRequired: { message: "Пароль обязателен для заполнения" },
+      isCapitalSymbol: {
+        message: "Пароль должен содержать хотя бы одну заглавную букву"
+      },
+      isContainDigit: {
+        message: "Пароль должен содержать хотя бы одну цифру"
+      },
+      min: { message: "Пароль должен содержать не менее 8 символов", value: 8 }
     }
   };
 
@@ -32,6 +40,8 @@ const Login = () => {
     return !Object.keys(errors).length;
   };
 
+  const isValide = !Object.keys(errors).length;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = validate();
@@ -40,24 +50,31 @@ const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <TextField
-        label="Электронная почта"
-        name="email"
-        value={data.email}
-        onChange={handleChange}
-        error={errors.email}
-      />
-      <TextField
-        label="Пароль"
-        type="password"
-        name="password"
-        value={data.password}
-        onChange={handleChange}
-        error={errors.password}
-      />
-      <button>Отправить</button>
-    </form>
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-md-6 offset-md-3 shadow p-4">
+          <h3 className="mb-4">Авторизоваться</h3>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Электронная почта"
+              name="email"
+              value={data.email}
+              onChange={handleChange}
+              error={errors.email}
+            />
+            <TextField
+              label="Пароль"
+              type="password"
+              name="password"
+              value={data.password}
+              onChange={handleChange}
+              error={errors.password}
+            />
+            <button className="btn btn-primary w-100" disabled={!isValide}>Отправить</button>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 
