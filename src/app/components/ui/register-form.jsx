@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
+import api from "../../api";
 import { validator } from "../../../utils/validator";
 import TextField from "../common/form/text-field";
+import SelectField from "../common/form/select-field";
 
-const LoginForm = () => {
-  const [data, setData] = useState({ email: "", password: "" });
+const RegisterForm = () => {
+  const [data, setData] = useState({ email: "", password: "", profession: "" });
   const [errors, setErrors] = useState({});
+  const [professions, setProfessions] = useState();
+
+  useEffect(() => {
+    api.professions.fetchAll().then((data) => setProfessions(data));
+  }, []);
 
   const handleChange = ({ target }) => {
     setData((prevState) => ({
@@ -27,6 +34,9 @@ const LoginForm = () => {
         message: "Пароль должен содержать хотя бы одну цифру"
       },
       min: { message: "Пароль должен содержать не менее 8 символов", value: 8 }
+    },
+    profession: {
+      isRequired: { message: "Поле обязательно для заполнения" }
     }
   };
 
@@ -66,6 +76,15 @@ const LoginForm = () => {
         onChange={handleChange}
         error={errors.password}
       />
+      <SelectField
+        label="Профессия"
+        defaultOption="Выбрать профессию..."
+        name="profession"
+        options={professions}
+        onChange={handleChange}
+        value={data.profession}
+        error={errors.profession}
+      />
       <button className="btn btn-primary w-100 mb-1" disabled={!isValide}>
         Отправить
       </button>
@@ -73,4 +92,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
