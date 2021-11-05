@@ -21,6 +21,7 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
         />
         {type === "password" && (
           <button
+            type="button"
             onClick={toggleShowPassword}
             className="btn btn-outline-secondary"
           >
