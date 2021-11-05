@@ -2,6 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const SelectField = ({ label, name, value, onChange, defaultOption, options, error }) => {
+  const handleChange = ({ target }) => {
+    onChange({ name: [target.name], value: target.value });
+  };
+
   const optionsArray =
     !Array.isArray(options) && typeof options === "object"
       ? Object.keys(options).map((key) => ({
@@ -20,7 +24,7 @@ const SelectField = ({ label, name, value, onChange, defaultOption, options, err
         id="validationCustom04"
         name={name}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
       >
         <option disabled value="">
           {defaultOption}

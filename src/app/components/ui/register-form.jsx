@@ -4,25 +4,29 @@ import { validator } from "../../../utils/validator";
 import TextField from "../common/form/text-field";
 import SelectField from "../common/form/select-field";
 import RadioField from "../common/form/radio-field";
+import MultiSelctField from "../common/form/multi-select-field";
 
 const RegisterForm = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
     profession: "",
-    gender: "male"
+    gender: "male",
+    qualities: []
   });
+  const [qualities, setQualities] = useState({});
   const [errors, setErrors] = useState({});
   const [professions, setProfessions] = useState();
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
+    api.qualities.fetchAll().then((data) => setQualities(data));
   }, []);
 
-  const handleChange = ({ target }) => {
+  const handleChange = (object) => {
     setData((prevState) => ({
       ...prevState,
-      [target.name]: target.value
+      [object.name]: object.value
     }));
   };
 
@@ -98,8 +102,15 @@ const RegisterForm = () => {
           { name: "Женщина", value: "female" },
           { name: "Другое", value: "other" }
         ]}
+        label="Пол"
         value={data.gender}
         onChange={handleChange}
+      />
+      <MultiSelctField
+        name="qualities"
+        onChange={handleChange}
+        options={qualities}
+        label="Качества"
       />
       <button className="btn btn-primary w-100 mb-1" disabled={!isValide}>
         Отправить

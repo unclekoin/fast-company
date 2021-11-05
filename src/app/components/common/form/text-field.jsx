@@ -3,16 +3,21 @@ import PropTypes from "prop-types";
 
 const TextField = ({ label, type, name, value, onChange, error }) => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange = ({ target }) => {
+    onChange({ name: [target.name], value: target.value });
+  };
+
   const toggleShowPassword = () => {
     setShowPassword((prevState) => !prevState);
   };
 
   return (
     <div className="mb-4">
-      <label htmlFor={name}>{label}</label>
+      <label className="form-label" htmlFor={name}>{label}</label>
       <div className="input-group has-validation">
         <input
-          onChange={onChange}
+          onChange={handleChange}
           type={showPassword ? "text" : type}
           id={name}
           value={value}

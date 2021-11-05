@@ -6,10 +6,10 @@ const LoginForm = () => {
   const [data, setData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
 
-  const handleChange = ({ target }) => {
+  const handleChange = (object) => {
     setData((prevState) => ({
       ...prevState,
-      [target.name]: target.value
+      [object.name]: object.value
     }));
   };
 

@@ -2,13 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const RadioField = ({ label, options, name, onChange, value }) => {
+  const handleChange = ({ target }) => {
+    onChange({ name: [target.name], value: target.value });
+  };
+
   return (
     <div className="mb-4">
-      <label className="form-label">{label}</label>
+      <label className="form-label d-block">{label}</label>
       {options.map((option) => (
         <div key={option.name + "_" + option.value} className="form-check form-check-inline">
           <input
-            onChange={onChange}
+            onChange={handleChange}
             className="form-check-input"
             type="radio"
             name={name}
