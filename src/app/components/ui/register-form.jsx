@@ -4,7 +4,8 @@ import { validator } from "../../../utils/validator";
 import TextField from "../common/form/text-field";
 import SelectField from "../common/form/select-field";
 import RadioField from "../common/form/radio-field";
-import MultiSelctField from "../common/form/multi-select-field";
+import MultiSelectField from "../common/form/multi-select-field";
+import CheckboxField from "../common/form/checkbox-field";
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -12,7 +13,8 @@ const RegisterForm = () => {
     password: "",
     profession: "",
     gender: "male",
-    qualities: []
+    qualities: [],
+    license: false
   });
   const [qualities, setQualities] = useState({});
   const [errors, setErrors] = useState({});
@@ -47,6 +49,9 @@ const RegisterForm = () => {
     },
     profession: {
       isRequired: { message: "Поле обязательно для заполнения" }
+    },
+    license: {
+      isRequired: { message: "Вы должны подтвердить лицензионное соглашение" }
     }
   };
 
@@ -60,7 +65,7 @@ const RegisterForm = () => {
     return !Object.keys(errors).length;
   };
 
-  const isValide = !Object.keys(errors).length;
+  const isValid = !Object.keys(errors).length;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -106,13 +111,21 @@ const RegisterForm = () => {
         value={data.gender}
         onChange={handleChange}
       />
-      <MultiSelctField
+      <MultiSelectField
         name="qualities"
         onChange={handleChange}
         options={qualities}
         label="Качества"
       />
-      <button className="btn btn-primary w-100 mb-1" disabled={!isValide}>
+      <CheckboxField
+        value={data.license}
+        onChange={handleChange}
+        name="license"
+        error={errors.license}
+      >
+        Подтверидть <a href="/">лицензионное соглашение</a>
+      </CheckboxField>
+      <button className="btn btn-primary w-100 mb-1" disabled={!isValid}>
         Отправить
       </button>
     </form>
