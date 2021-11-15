@@ -3,7 +3,7 @@ import _ from "lodash";
 import api from "../../../api";
 import { paginate } from "../../../../utils/paginate";
 import PropTypes from "prop-types";
-import Pagination from "../../common/pagintation";
+import Pagination from "../../common/pagination";
 import GroupList from "../../common/group-list";
 import SearchStatus from "../../ui/search-status";
 import UsersTable from "../../ui/users-table";

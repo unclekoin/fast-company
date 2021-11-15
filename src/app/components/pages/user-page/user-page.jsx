@@ -7,12 +7,13 @@ import Qualities from "../../../components/ui/qualities";
 const UserPage = ({ userId }) => {
   const history = useHistory();
   const [user, setUser] = useState();
+
   useEffect(() => {
     api.users.getById(userId).then((data) => setUser(data));
   }, []);
 
   const handleClick = () => {
-    history.push("/users");
+    history.push(history.location.pathname + "/edit");
   };
 
   if (user) {
@@ -23,8 +24,12 @@ const UserPage = ({ userId }) => {
         <Qualities qualities={user.qualities} />
         <p>Завершенные встречи: {user.completedMeetings}</p>
         <h3>Рейтинг: {user.rate}</h3>
-        <button onClick={handleClick} className="btn btn-primary">
-          Все пользователи
+        <button
+          onClick={handleClick}
+          className="btn btn-primary"
+          role="button"
+        >
+          Изменить
         </button>
       </div>
     );
