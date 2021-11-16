@@ -107,7 +107,8 @@ const EditUserPage = () => {
   const isValid = !Object.keys(errors).length;
 
   return (
-    <div className="container mt-5">
+    <div onClick={() => history.goBack()} className="container mt-5">
+      <button className="btn btn-primary pe-3"><i className="bi bi-caret-left"></i>Назад</button>
       <div className="row">
         <div className="col-md-6 offset-md-3 shadow p-4">
           {!isLoading && Object.keys(professions).length ? (
