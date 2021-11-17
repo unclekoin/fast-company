@@ -23,6 +23,10 @@ const UserPage = ({ userId }) => {
     api.comments.fetchCommentsForUser(userId).then((data) => setComments(data));
   };
 
+  const updateUsers = () => {
+    api.comments.fetchCommentsForUser(userId).then((data) => setComments(data));
+  };
+
   const handleClick = () => {
     history.push(history.location.pathname + "/edit");
   };
@@ -91,7 +95,7 @@ const UserPage = ({ userId }) => {
           </div>
 
           <div className="col-md-8">
-            <CommentForm />
+            <CommentForm users={users} pageId={userId} updateUsers={updateUsers} />
             {users && comments ? (
               <Comments
                 comments={comments}
