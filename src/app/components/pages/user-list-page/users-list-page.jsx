@@ -8,6 +8,7 @@ import GroupList from "../../common/group-list";
 import SearchStatus from "../../ui/search-status";
 import UsersTable from "../../ui/users-table";
 import SearchField from "../../common/form/search-field";
+import { useUsers } from "../../../hooks/use-users";
 
 const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,20 +18,20 @@ const UsersListPage = () => {
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
   const pageSize = 8;
 
-  const [users, setUsers] = useState();
-  useEffect(() => {
-    api.users.fetchAll().then((data) => setUsers(data));
-  }, []);
+  const { users } = useUsers();
+  console.log(users);
 
   const handleDelete = (userId) => {
-    setUsers((prevState) => prevState.filter((item) => item._id !== userId));
+    // setUsers((prevState) => prevState.filter((item) => item._id !== userId));
+    console.log(userId);
   };
 
   const handleToggleBookMark = (id) => {
     const newUsers = [...users];
     const userIndex = newUsers.findIndex((user) => user._id === id);
     newUsers[userIndex].bookmark = !users[userIndex].bookmark;
-    setUsers(newUsers);
+    // setUsers(newUsers);
+    console.log(newUsers);
   };
 
   useEffect(() => {
@@ -67,12 +68,10 @@ const UsersListPage = () => {
       ? users.filter((user) =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
-      : selectedProf
-        ? users.filter(
-          (user) =>
-            JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-        )
-        : users;
+      : selectedProf ? users.filter(
+        (user) =>
+          JSON.stringify(user.profession) === JSON.stringify(selectedProf)
+      ) : users;
 
     const count = foundUsers.length;
 
