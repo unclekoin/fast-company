@@ -38,6 +38,10 @@ const MultiSelectField = ({ name, options, onChange, label, defaultValue }) => {
   );
 };
 
+MultiSelectField.defaultProps = {
+  defaultValue: []
+};
+
 MultiSelectField.propTypes = {
   name: PropTypes.string,
   options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
