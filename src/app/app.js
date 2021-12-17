@@ -8,12 +8,13 @@ import Login from "./layouts/login";
 import Users from "./layouts/users";
 import { ProfessionProvider } from "./hooks/use-profession";
 import { QualitiesProvider } from "./hooks/use-qualities";
+import { AuthProvider } from "./hooks/use-auth";
 
 const App = () => {
   return (
     <>
-      <Navbar />
-      <div>
+      <AuthProvider>
+        <Navbar />
         <QualitiesProvider>
           <ProfessionProvider>
             <Switch>
@@ -24,9 +25,8 @@ const App = () => {
             </Switch>
           </ProfessionProvider>
         </QualitiesProvider>
-
-        <ToastContainer />
-      </div>
+      </AuthProvider>
+      <ToastContainer />
     </>
   );
 };

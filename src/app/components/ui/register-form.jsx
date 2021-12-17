@@ -7,6 +7,7 @@ import MultiSelectField from "../common/form/multi-select-field";
 import CheckboxField from "../common/form/checkbox-field";
 import { useQualities } from "../../hooks/use-qualities";
 import { useProfessions } from "../../hooks/use-profession";
+import { useAuth } from "../../hooks/use-auth";
 
 const RegisterForm = () => {
   const [data, setData] = useState({
@@ -17,6 +18,8 @@ const RegisterForm = () => {
     qualities: [],
     license: false
   });
+
+  const { signUp } = useAuth();
   const { qualities } = useQualities();
   const qualitiesList = qualities.map((quality) => ({
     label: quality.name,
@@ -75,7 +78,7 @@ const RegisterForm = () => {
       ...data,
       qualities: data.qualities.map((quality) => quality.value)
     };
-    console.log(modifiedData);
+    signUp(modifiedData);
   };
 
   return (
