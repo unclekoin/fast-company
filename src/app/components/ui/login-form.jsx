@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 import TextField from "../common/form/text-field";
 import CheckboxField from "../common/form/checkbox-field";
+import { useAuth } from "../../hooks/use-auth";
 
 const LoginForm = () => {
+  const history = useHistory();
   const [data, setData] = useState({ email: "", password: "", stayOn: false });
   const [errors, setErrors] = useState({});
+  const [enterError, setEnterError] = useState(null);
+  const { logIn } = useAuth();
 
   const handleChange = (object) => {
     setData((prevState) => ({
       ...prevState,
       [object.name]: object.value
     }));
+    setEnterError(null);
   };
 
   const validatorConfig = {
     email: {
-      isRequired: { message: "Электроннная почта обязательна для заполнения" },
-      isEmail: { message: "Некорректно введен адрес электронной почты" }
+      isRequired: { message: "Электроннная почта обязательна для заполнения" }
     },
     password: {
-      isRequired: { message: "Пароль обязателен для заполнения" },
-      isCapitalSymbol: {
-        message: "Пароль должен содержать хотя бы одну заглавную букву"
-      },
-      isContainDigit: {
-        message: "Пароль должен содержать хотя бы одну цифру"
-      },
-      min: { message: "Пароль должен содержать не менее 8 символов", value: 8 }
+      isRequired: { message: "Пароль обязателен для заполнения" }
     }
   };
 
@@ -43,11 +41,16 @@ const LoginForm = () => {
 
   const isValid = !Object.keys(errors).length;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    console.log(data);
+    try {
+      await logIn(data);
+      history.push("/");
+    } catch (error) {
+      setEnterError(error.message);
+    }
   };
 
   return (
@@ -74,7 +77,8 @@ const LoginForm = () => {
       >
         Оставаться в системе
       </CheckboxField>
-      <button className="btn btn-primary w-100 mb-1" disabled={!isValid}>
+      {enterError && <p className="text-danger">{enterError}</p>}
+      <button className="btn btn-primary w-100 mb-1" disabled={!isValid || enterError}>
         Отправить
       </button>
     </form>
