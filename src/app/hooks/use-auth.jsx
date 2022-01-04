@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import axios from "axios";
 import userService from "../services/user.service";
-import { setTokens } from "../services/localStorage.service";
+import localStorageService, { setTokens } from "../services/localStorage.service";
 
 const httpAuth = axios.create({
   baseURL: "https://identitytoolkit.googleapis.com/v1/",
@@ -18,7 +18,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({});
   const [error, setError] = useState(null);
 
   async function logIn({ email, password }) {
@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         returnSecureToken: true
       });
       setTokens(data);
+      getUserData();
     } catch (error) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
@@ -42,6 +43,9 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
   async function signUp({ email, password, ...rest }) {
     try {
       const { data } = await httpAuth.post(`accounts:signUp`, {
@@ -51,7 +55,13 @@ export const AuthProvider = ({ children }) => {
       });
       setTokens(data);
 
-      await createUser({ _id: data.localId, email, ...rest });
+      await createUser({
+        _id: data.localId,
+        email,
+        rate: randomInt(1, 5),
+        completedMeetings: randomInt(0, 200),
+        ...rest
+      });
     } catch (error) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
@@ -63,21 +73,38 @@ export const AuthProvider = ({ children }) => {
           throw errorObject;
         }
       }
-      // throw new Error
     }
   }
   async function createUser(data) {
     try {
       const { content } = await userService.create(data);
-      setUser(content);
+      console.log(content);
+      setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
     }
   }
+
   function errorCatcher(error) {
     const { message } = error.response.data;
     setError(message);
   }
+
+  async function getUserData() {
+    try {
+      const { content } = await userService.getCurrentUser();
+      setCurrentUser(content);
+    } catch (error) {
+      errorCatcher(error);
+    }
+  }
+
+  useEffect(() => {
+    if (localStorageService.getAccessToken()) {
+      getUserData();
+    }
+  }, []);
+
   useEffect(() => {
     if (error !== null) {
       toast(error);
