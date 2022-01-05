@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import LoginForm from "../components/ui/login-form";
 import RegisterForm from "../components/ui/register-form";
 
-const Login = () => {
+const LogIn = () => {
   const { type } = useParams();
   const [formType, setFormType] = useState(
     type === "register" ? type : "login"
@@ -56,4 +56,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LogIn;

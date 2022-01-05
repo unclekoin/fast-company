@@ -1,11 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import axios from "axios";
 import userService from "../services/user.service";
-import localStorageService, { setTokens } from "../services/localStorage.service";
+import localStorageService, {
+  setTokens
+} from "../services/localStorage.service";
 
-const httpAuth = axios.create({
+export const httpAuth = axios.create({
   baseURL: "https://identitytoolkit.googleapis.com/v1/",
   params: {
     key: process.env.REACT_APP_FIREBASE_KEY
@@ -18,8 +21,10 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState({});
+  const history = useHistory();
+  const [currentUser, setCurrentUser] = useState();
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   async function logIn({ email, password }) {
     try {
@@ -29,7 +34,7 @@ export const AuthProvider = ({ children }) => {
         returnSecureToken: true
       });
       setTokens(data);
-      getUserData();
+      await getUserData();
     } catch (error) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
@@ -43,9 +48,17 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }
+
+  function logOut() {
+    localStorageService.removeAuthData();
+    setCurrentUser(null);
+    history.push("/");
+  }
+
   function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
+
   async function signUp({ email, password, ...rest }) {
     try {
       const { data } = await httpAuth.post(`accounts:signUp`, {
@@ -60,6 +73,9 @@ export const AuthProvider = ({ children }) => {
         email,
         rate: randomInt(1, 5),
         completedMeetings: randomInt(0, 200),
+        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+          .toString(36)
+          .substring(7)}.svg`,
         ...rest
       });
     } catch (error) {
@@ -75,6 +91,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }
+
   async function createUser(data) {
     try {
       const { content } = await userService.create(data);
@@ -96,12 +113,16 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
     if (localStorageService.getAccessToken()) {
       getUserData();
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -112,8 +133,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, [error]);
   return (
-    <AuthContext.Provider value={{ signUp, logIn, currentUser }}>
-      {children}
+    <AuthContext.Provider value={{ signUp, logIn, logOut, currentUser }}>
+      {!isLoading ? children : <h3>Loading...</h3>}
     </AuthContext.Provider>
   );
 };
