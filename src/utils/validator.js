@@ -6,6 +6,8 @@ export const validator = (data, config) => {
     case "isRequired": {
       if (typeof data === "boolean") {
         statusValidate = !data;
+      } else if (typeof data === "object") {
+        statusValidate = false;
       } else {
         statusValidate = !data.trim();
       }

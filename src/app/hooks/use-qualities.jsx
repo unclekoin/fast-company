@@ -11,10 +11,19 @@ export const useQualities = () => {
 
 export const QualitiesProvider = ({ children }) => {
   const [qualities, setQualities] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    async function getQualitiesList() {
+      try {
+        const { content } = await qualitiesService.fetchAll();
+        setQualities(content);
+        setIsLoading(false);
+      } catch (error) {
+        errorCatcher(error);
+      }
+    }
     getQualitiesList();
   }, []);
 
@@ -24,16 +33,6 @@ export const QualitiesProvider = ({ children }) => {
       setError(null);
     }
   }, [error]);
-
-  async function getQualitiesList() {
-    try {
-      const { content } = await qualitiesService.fetchAll();
-      setQualities(content);
-      setIsLoading(false);
-    } catch (error) {
-      errorCatcher(error);
-    }
-  }
 
   const getQualities = (ids) => {
     return qualities.filter((quality) => ids.includes(quality._id));

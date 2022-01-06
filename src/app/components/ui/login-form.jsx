@@ -45,10 +45,12 @@ const LoginForm = () => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
+
     try {
       await logIn(data);
+      console.log(history);
       history.push(
-        history.location.state.from.pathname
+        history.location.state
           ? history.location.state.from.pathname
           : "/"
       );

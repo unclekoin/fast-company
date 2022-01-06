@@ -10,7 +10,7 @@ const QualitiesCard = ({ data }) => {
           <span>Качества</span>
         </h5>
         <p className="card-text">
-          <Qualities qualities={data} />
+          <Qualities ids={data} />
         </p>
       </div>
     </div>
