@@ -4,7 +4,7 @@ import { validator } from "../../../../utils/validator";
 import PropTypes from "prop-types";
 
 const CommentForm = ({ onSubmit }) => {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ content: "" });
   const [errors, setErrors] = useState({});
 
   const handleChange = (object) => {
@@ -28,7 +28,6 @@ const CommentForm = ({ onSubmit }) => {
 
   const validate = () => {
     const errors = validator(data, validatorConfig);
-    console.log(data);
 
     setErrors(errors);
     return !Object.keys(errors).length;
@@ -37,7 +36,7 @@ const CommentForm = ({ onSubmit }) => {
   const isValid = !Object.keys(errors).length;
 
   const clearForm = () => {
-    setData({});
+    setData({ content: "" });
     setErrors({});
   };
 
