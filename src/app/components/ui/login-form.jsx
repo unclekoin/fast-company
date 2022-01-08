@@ -48,7 +48,6 @@ const LoginForm = () => {
 
     try {
       await logIn(data);
-      console.log(history);
       history.push(
         history.location.state
           ? history.location.state.from.pathname

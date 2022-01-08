@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import Comments from "../../ui/comments";
 import UserCard from "../../ui/user-card";
@@ -9,7 +9,11 @@ import { CommentsProvider } from "../../../hooks/use-comments";
 
 const UserPage = ({ userId }) => {
   const { getUserById } = useUsers();
-  const user = getUserById(userId);
+  let user = getUserById(userId);
+
+  useEffect(() => {
+    user = getUserById(userId);
+  }, [user]);
 
   if (user) {
     return (

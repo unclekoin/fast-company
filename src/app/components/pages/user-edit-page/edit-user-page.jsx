@@ -1,77 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import api from "../../../api";
+import { useHistory } from "react-router-dom";
 import { validator } from "../../../../utils/validator";
 import TextField from "../../common/form/text-field";
 import SelectField from "../../common/form/select-field";
 import RadioField from "../../common/form/radio-field";
 import MultiSelectField from "../../common/form/multi-select-field";
+import { useAuth } from "../../../hooks/use-auth";
+import { useQualities } from "../../../hooks/use-qualities";
+import { useProfessions } from "../../../hooks/use-profession";
 
 const EditUserPage = () => {
-  const { userId } = useParams();
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    profession: "",
-    gender: "male",
-    qualities: []
-  });
-  const [professions, setProfessions] = useState({});
-  const [qualities, setQualities] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState();
+  const { currentUser, updateUserData } = useAuth();
+  const { qualities, isLoading: qualitiesLoading } = useQualities();
+  const { professions, isLoading: professionLoading } = useProfessions();
   const [errors, setErrors] = useState({});
 
-  const getProfessionById = (id) => {
-    for (const profession in professions) {
-      const data = professions[profession];
-      if (data._id === id) return data;
-    }
-  };
-
-  const getQualities = (elements) => {
-    const qualitiesArray = [];
-    for (const element of elements) {
-      for (const quality in qualities) {
-        if (element.value === qualities[quality]._id) {
-          qualitiesArray.push(qualities[quality]);
-        }
-      }
-    }
-    return qualitiesArray;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
 
-    const { profession, qualities } = data;
-    api.users
-      .update(userId, {
-        ...data,
-        profession: getProfessionById(profession),
-        qualities: getQualities(qualities)
-      })
-      .then((data) => history.push(`/users/${data._id}`));
+    await updateUserData({
+      ...data,
+      qualities: data.qualities.map((quality) => quality.value)
+    });
+    history.push(`/users/${currentUser._id}`);
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    api.users.getById(userId).then(({ profession, ...data }) => {
-      setData((prevState) => ({
-        ...prevState,
-        ...data,
-        profession: profession._id
-      }));
-    });
-    api.qualities.fetchAll().then((data) => setQualities(data));
-    api.professions.fetchAll().then((data) => setProfessions(data));
-  }, []);
+  function getQualities(qualitiesIds) {
+    const qualitiesArray = [];
+    for (const qualityId of qualitiesIds) {
+      for (const quality of qualities) {
+        if (quality._id === qualityId) {
+          qualitiesArray.push(quality);
+        }
+      }
+    }
+    return qualitiesArray;
+  }
 
   useEffect(() => {
-    if (data._id) setIsLoading(false);
+    if (!professionLoading && !qualitiesLoading) {
+      setData({
+        ...currentUser,
+        qualities: getQualities(currentUser.qualities)
+      });
+    }
+  }, [professionLoading, qualitiesLoading]);
+
+  useEffect(() => {
+    if (data) setIsLoading(false);
   }, [data]);
 
   const validatorConfig = {
@@ -107,8 +88,10 @@ const EditUserPage = () => {
   const isValid = !Object.keys(errors).length;
 
   return (
-    <div onClick={() => history.goBack()} className="container mt-5">
-      <button className="btn btn-primary pe-3"><i className="bi bi-caret-left"></i>Назад</button>
+    <div className="container mt-5">
+      <button onClick={() => history.goBack()} className="btn btn-primary pe-3 mb-3">
+        <i className="bi bi-caret-left"></i>Назад
+      </button>
       <div className="row">
         <div className="col-md-6 offset-md-3 shadow p-4">
           {!isLoading && Object.keys(professions).length ? (
