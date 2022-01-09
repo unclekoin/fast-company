@@ -14,10 +14,7 @@ const MultiSelectField = ({ name, options, onChange, label, defaultValue }) => {
         label: options[key].name,
         value: options[key]._id
       }))
-      : options.map((option) => ({
-        label: option.name,
-        value: option._id
-      }));
+      : options;
 
   const handleChange = (value) => {
     onChange({ name: name, value });

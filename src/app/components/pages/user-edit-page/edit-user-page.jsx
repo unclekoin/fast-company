@@ -42,6 +42,11 @@ const EditUserPage = () => {
     return qualitiesArray;
   }
 
+  const options = qualities.map((option) => ({
+    label: option.name,
+    value: option._id
+  }));
+
   useEffect(() => {
     if (!professionLoading && !qualitiesLoading) {
       setData({
@@ -133,7 +138,7 @@ const EditUserPage = () => {
               <MultiSelectField
                 name="qualities"
                 onChange={handleChange}
-                options={qualities}
+                options={options}
                 label="Качества"
                 defaultValue={data.qualities}
               />
