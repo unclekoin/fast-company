@@ -41,7 +41,7 @@ http.interceptors.request.use(
 
     return config;
   },
-  (error) => {
+  function (error) {
     return Promise.reject(error);
   }
 );
@@ -61,7 +61,7 @@ http.interceptors.response.use(
     }
     return res;
   },
-  (error) => {
+  function (error) {
     const expectedErrors =
       error.response &&
       (error.response.status >= 400) & (error.response.status < 500);
@@ -79,7 +79,8 @@ const httpService = {
   get: http.get,
   post: http.post,
   put: http.put,
-  delete: http.delete
+  delete: http.delete,
+  patch: http.patch
 };
 
 export default httpService;

@@ -93,6 +93,8 @@ export const AuthProvider = ({ children }) => {
   }
 
   async function updateUserData(data) {
+    const { content } = await userService.update(data);
+    setCurrentUser(content);
     try {
       const { content } = await userService.update(data);
       setCurrentUser(content);
