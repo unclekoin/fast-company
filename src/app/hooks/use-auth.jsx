@@ -93,8 +93,6 @@ export const AuthProvider = ({ children }) => {
   }
 
   async function updateUserData(data) {
-    const { content } = await userService.update(data);
-    setCurrentUser(content);
     try {
       const { content } = await userService.update(data);
       setCurrentUser(content);
@@ -106,7 +104,6 @@ export const AuthProvider = ({ children }) => {
   async function createUser(data) {
     try {
       const { content } = await userService.create(data);
-      console.log(content);
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);

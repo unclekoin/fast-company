@@ -15,6 +15,10 @@ const EditUserPage = () => {
   const [data, setData] = useState();
   const { currentUser, updateUserData } = useAuth();
   const { qualities, isLoading: qualitiesLoading } = useQualities();
+  const qualitiesList = qualities.map((quality) => ({
+    label: quality.name,
+    value: quality._id
+  }));
   const { professions, isLoading: professionLoading } = useProfessions();
   const [errors, setErrors] = useState({});
 
@@ -42,22 +46,17 @@ const EditUserPage = () => {
     return qualitiesArray;
   }
 
-  const options = qualities.map((option) => ({
-    label: option.name,
-    value: option._id
-  }));
-
   useEffect(() => {
-    if (!professionLoading && !qualitiesLoading) {
+    if (!professionLoading && !qualitiesLoading && currentUser && !data) {
       setData({
         ...currentUser,
         qualities: getQualities(currentUser.qualities)
       });
     }
-  }, [professionLoading, qualitiesLoading]);
+  }, [professionLoading, qualitiesLoading, currentUser, data]);
 
   useEffect(() => {
-    if (data) setIsLoading(false);
+    if (data && isLoading) setIsLoading(false);
   }, [data]);
 
   const validatorConfig = {
@@ -138,7 +137,7 @@ const EditUserPage = () => {
               <MultiSelectField
                 name="qualities"
                 onChange={handleChange}
-                options={options}
+                options={qualitiesList}
                 label="Качества"
                 defaultValue={data.qualities}
               />
