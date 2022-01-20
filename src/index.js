@@ -6,12 +6,18 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./index.css";
 import App from "./app/app";
 import reportWebVitals from "./reportWebVitals";
+import { createStore } from "./app/store/create-store";
+import { Provider } from "react-redux";
+
+const store = createStore();
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -6,15 +6,17 @@ import SelectField from "../../common/form/select-field";
 import RadioField from "../../common/form/radio-field";
 import MultiSelectField from "../../common/form/multi-select-field";
 import { useAuth } from "../../../hooks/use-auth";
-import { useQualities } from "../../../hooks/use-qualities";
 import { useProfessions } from "../../../hooks/use-profession";
+import { useSelector } from "react-redux";
+import { getQualities, getQualitiesLoadingStatus } from "../../../store/qualities";
 
 const EditUserPage = () => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState();
   const { currentUser, updateUserData } = useAuth();
-  const { qualities, isLoading: qualitiesLoading } = useQualities();
+  const qualities = useSelector(getQualities());
+  const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
   const qualitiesList = qualities.map((quality) => ({
     label: quality.name,
     value: quality._id
@@ -34,7 +36,7 @@ const EditUserPage = () => {
     history.push(`/users/${currentUser._id}`);
   };
 
-  function getQualities(qualitiesIds) {
+  function getQualitiesList(qualitiesIds) {
     const qualitiesArray = [];
     for (const qualityId of qualitiesIds) {
       for (const quality of qualities) {
@@ -50,7 +52,7 @@ const EditUserPage = () => {
     if (!professionLoading && !qualitiesLoading && currentUser && !data) {
       setData({
         ...currentUser,
-        qualities: getQualities(currentUser.qualities)
+        qualities: getQualitiesList(currentUser.qualities)
       });
     }
   }, [professionLoading, qualitiesLoading, currentUser, data]);
