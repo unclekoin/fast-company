@@ -12,10 +12,12 @@ import ProtectedRoute from "./components/common/protected-route";
 import { useDispatch } from "react-redux";
 import { loadQualitiesList } from "./store/qualities";
 import { loadProfessionsList } from "./store/professions";
+import { loadUsersList } from "./store/users";
 
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(loadUsersList());
     dispatch(loadQualitiesList());
     dispatch(loadProfessionsList());
   }, []);

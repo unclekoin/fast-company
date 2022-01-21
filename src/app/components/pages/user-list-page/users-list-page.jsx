@@ -7,13 +7,14 @@ import GroupList from "../../common/group-list";
 import SearchStatus from "../../ui/search-status";
 import UsersTable from "../../ui/users-table";
 import SearchField from "../../common/form/search-field";
-import { useUsers } from "../../../hooks/use-users";
 import { useAuth } from "../../../hooks/use-auth";
-import { useSelector } from "react-redux";
-import { getProfessions, getProfessionsLoadingStatus } from "../../../store/professions";
+import { useSelector, useDispatch } from "react-redux";
+import { getProfessions, getProfessionsLoadingStatus, loadProfessionsList } from "../../../store/professions";
+import { getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
-  const { users } = useUsers();
+  const dispatch = useDispatch();
+  const users = useSelector(getUsersList());
   const { currentUser } = useAuth();
   const professions = useSelector(getProfessions());
   const professionsLoading = useSelector(getProfessionsLoadingStatus());
@@ -22,6 +23,10 @@ const UsersListPage = () => {
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
   const pageSize = 8;
+
+  useEffect(() => {
+    dispatch(loadProfessionsList());
+  }, []);
 
   const handleDelete = (userId) => {
     // setUsers((prevState) => prevState.filter((item) => item._id !== userId));

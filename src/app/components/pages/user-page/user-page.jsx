@@ -4,12 +4,12 @@ import Comments from "../../ui/comments";
 import UserCard from "../../ui/user-card";
 import QualitiesCard from "../../ui/qualities-card";
 import MeetingsCard from "../../ui/meetings-card";
-import { useUsers } from "../../../hooks/use-users";
 import { CommentsProvider } from "../../../hooks/use-comments";
+import { useSelector } from "react-redux";
+import { getUserById } from "../../../store/users";
 
 const UserPage = ({ userId }) => {
-  const { getUserById } = useUsers();
-  const user = getUserById(userId);
+  const user = useSelector(getUserById(userId));
 
   if (user) {
     return (
