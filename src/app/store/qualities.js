@@ -46,11 +46,10 @@ export const loadQualitiesList = () => async (dispatch, getState) => {
 };
 
 export const getQualities = () => (state) => state.qualities.entities;
-export const getQualitiesLoadingStatus = () => (state) =>
-  state.qualities.isLoading;
+export const getQualitiesLoadingStatus = () => (state) => state.qualities.isLoading;
 export const getQualitiesByIds = (qualitiesIds) => (state) => {
   const qualitiesArray = [];
-  if (state.qualities.entities) {
+  if (state.qualities.entities && qualitiesIds) {
     for (const qualityId of qualitiesIds) {
       for (const quality of state.qualities.entities) {
         if (quality._id === qualityId) {

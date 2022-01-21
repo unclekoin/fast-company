@@ -6,9 +6,15 @@ import SelectField from "../../common/form/select-field";
 import RadioField from "../../common/form/radio-field";
 import MultiSelectField from "../../common/form/multi-select-field";
 import { useAuth } from "../../../hooks/use-auth";
-import { useProfessions } from "../../../hooks/use-profession";
 import { useSelector } from "react-redux";
-import { getQualities, getQualitiesLoadingStatus } from "../../../store/qualities";
+import {
+  getQualities,
+  getQualitiesLoadingStatus
+} from "../../../store/qualities";
+import {
+  getProfessions,
+  getProfessionsLoadingStatus
+} from "../../../store/professions";
 
 const EditUserPage = () => {
   const history = useHistory();
@@ -21,7 +27,8 @@ const EditUserPage = () => {
     label: quality.name,
     value: quality._id
   }));
-  const { professions, isLoading: professionLoading } = useProfessions();
+  const professions = useSelector(getProfessions());
+  const professionLoading = useSelector(getProfessionsLoadingStatus());
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
@@ -38,10 +45,12 @@ const EditUserPage = () => {
 
   function getQualitiesList(qualitiesIds) {
     const qualitiesArray = [];
-    for (const qualityId of qualitiesIds) {
-      for (const quality of qualities) {
-        if (quality._id === qualityId) {
-          qualitiesArray.push(quality);
+    if (qualitiesIds) {
+      for (const qualityId of qualitiesIds) {
+        for (const quality of qualities) {
+          if (quality._id === qualityId) {
+            qualitiesArray.push(quality);
+          }
         }
       }
     }
@@ -95,7 +104,10 @@ const EditUserPage = () => {
 
   return (
     <div className="container mt-5">
-      <button onClick={() => history.goBack()} className="btn btn-primary pe-3 mb-3">
+      <button
+        onClick={() => history.goBack()}
+        className="btn btn-primary pe-3 mb-3"
+      >
         <i className="bi bi-caret-left"></i>Назад
       </button>
       <div className="row">
