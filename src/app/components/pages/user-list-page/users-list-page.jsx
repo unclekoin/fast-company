@@ -7,15 +7,14 @@ import GroupList from "../../common/group-list";
 import SearchStatus from "../../ui/search-status";
 import UsersTable from "../../ui/users-table";
 import SearchField from "../../common/form/search-field";
-import { useAuth } from "../../../hooks/use-auth";
 import { useSelector, useDispatch } from "react-redux";
 import { getProfessions, getProfessionsLoadingStatus, loadProfessionsList } from "../../../store/professions";
-import { getUsersList } from "../../../store/users";
+import { getCurrentUserId, getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
   const dispatch = useDispatch();
   const users = useSelector(getUsersList());
-  const { currentUser } = useAuth();
+  const currentUserId = useSelector(getCurrentUserId());
   const professions = useSelector(getProfessions());
   const professionsLoading = useSelector(getProfessionsLoadingStatus());
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,7 +76,7 @@ const UsersListPage = () => {
             JSON.stringify(user.profession) === JSON.stringify(selectedProf)
         ) : data;
 
-      return foundUsers.filter((user) => user._id !== currentUser._id);
+      return foundUsers.filter((user) => user._id !== currentUserId);
     }
 
     const foundUsers = filterUsers(users);
