@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { validator } from "../../../../utils/validator";
 import TextField from "../../common/form/text-field";
 import SelectField from "../../common/form/select-field";
 import RadioField from "../../common/form/radio-field";
 import MultiSelectField from "../../common/form/multi-select-field";
-import { useAuth } from "../../../hooks/use-auth";
-import { useSelector } from "react-redux";
 import {
   getQualities,
   getQualitiesLoadingStatus
@@ -15,14 +13,14 @@ import {
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../../store/professions";
-import { getCurrentUserData } from "../../../store/users";
+import { getCurrentUserData, updateUserData } from "../../../store/users";
+import history from "../../../../utils/history";
 
 const EditUserPage = () => {
-  const history = useHistory();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState();
   const currentUser = useSelector(getCurrentUserData());
-  const { updateUserData } = useAuth();
   const qualities = useSelector(getQualities());
   const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
   const qualitiesList = qualities.map((quality) => ({
@@ -38,11 +36,10 @@ const EditUserPage = () => {
     const isValid = validate();
     if (!isValid) return;
 
-    await updateUserData({
+    dispatch(updateUserData({
       ...data,
-      qualities: data.qualities.map((quality) => quality.value)
-    });
-    history.push(`/users/${currentUser._id}`);
+      qualities: data.qualities.map((quality) => quality.value || quality._id)
+    }));
   };
 
   function getQualitiesList(qualitiesIds) {
