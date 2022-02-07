@@ -3,3 +3,5 @@
 - React
 - Redux
 - Bootstrap
+- Node.js
+- Express.js
