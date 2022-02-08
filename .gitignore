@@ -24,10 +24,11 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea/
-/client/.vscode
+.vscode/
 /server/config/
 /server/node_modules
 /client/node_modules
+/client/.env.development
 
 # production
 /client/build
