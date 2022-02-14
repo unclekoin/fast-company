@@ -10,6 +10,7 @@ import SearchField from "../../common/form/search-field";
 import { useSelector, useDispatch } from "react-redux";
 import { getProfessions, getProfessionsLoadingStatus, loadProfessionsList } from "../../../store/professions";
 import { getCurrentUserId, getUsersList } from "../../../store/users";
+import addFavoriteUser from "../../../../utils/add-favorite-user";
 
 const UsersListPage = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const UsersListPage = () => {
   const currentUserId = useSelector(getCurrentUserId());
   const professions = useSelector(getProfessions());
   const professionsLoading = useSelector(getProfessionsLoadingStatus());
+  const [, setBookMarkStatus] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProf, setSelectedProf] = useState();
@@ -33,11 +35,8 @@ const UsersListPage = () => {
   };
 
   const handleToggleBookMark = (id) => {
-    const newUsers = [...users];
-    const userIndex = newUsers.findIndex((user) => user._id === id);
-    newUsers[userIndex].bookmark = !users[userIndex].bookmark;
-    // setUsers(newUsers);
-    console.log(newUsers);
+    addFavoriteUser(id);
+    setBookMarkStatus((prevState) => !prevState);
   };
 
   useEffect(() => {

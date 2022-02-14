@@ -35,7 +35,7 @@ const UsersTable = ({
       component: (user) => (
         <Bookmark
           onClick={() => onToggleBookMark(user._id)}
-          status={user.bookmark}
+          id={user._id}
         />
       )
     }
