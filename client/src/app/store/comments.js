@@ -75,7 +75,7 @@ export const removeComment = (commentId) => async (dispatch) => {
   dispatch(commentRemoveRequested());
   try {
     const { content } = await commentService.removeComment(commentId);
-    if (content === null) dispatch(commentRemoved(commentId));
+    if (!content) dispatch(commentRemoved(commentId));
   } catch (error) {
     dispatch(removeCommentFailed(error.message));
   }

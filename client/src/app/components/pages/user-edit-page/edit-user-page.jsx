@@ -137,14 +137,14 @@ const EditUserPage = () => {
                 error={errors.profession}
               />
               <RadioField
-                name="gender"
+                name="sex"
                 options={[
                   { name: "Мужчина", value: "male" },
                   { name: "Женщина", value: "female" },
                   { name: "Другое", value: "other" }
                 ]}
                 label="Пол"
-                value={data.gender}
+                value={data.sex}
                 onChange={handleChange}
               />
               <MultiSelectField

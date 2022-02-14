@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { orderBy } from "lodash";
-import { nanoid } from "nanoid";
 import CommentsList, { CommentForm } from "../common/comments";
 import {
   getComments,
@@ -11,11 +10,9 @@ import {
   createComment,
   removeComment
 } from "../../store/comments";
-import { getCurrentUserId } from "../../store/users";
 
 const Comments = () => {
   const { userId } = useParams();
-  const currentUserId = useSelector(getCurrentUserId());
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loadCommentsList(userId));
@@ -23,15 +20,8 @@ const Comments = () => {
   const isLoading = useSelector(getCommentsLoadingStatus());
   const comments = useSelector(getComments());
 
-  const handleSubmit = ({ content }) => {
-    const data = {
-      content,
-      _id: nanoid(),
-      pageId: userId,
-      created_at: Date.now(),
-      userId: currentUserId
-    };
-    dispatch(createComment(data));
+  const handleSubmit = (data) => {
+    dispatch(createComment({ ...data, pageId: userId }));
   };
 
   const handleRemoveComment = (id) => {

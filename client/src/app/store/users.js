@@ -2,7 +2,6 @@ import { createSlice, createAction } from "@reduxjs/toolkit";
 import authService from "../services/auth.service";
 import localStorageService from "../services/localStorage.service";
 import userService from "../services/user.service";
-import getRandomInt from "../../utils/get-random-int";
 import history from "../../utils/history";
 import generateAuthError from "../../utils/generate-auth-error";
 
@@ -74,15 +73,12 @@ const {
   usersRequestFiled,
   authRequestSuccess,
   authRequestFailed,
-  userCreated,
   userLoggedOut,
   userDataUpdated,
   updateUserFailed,
   authRequested
 } = actions;
 
-const userCreateRequested = createAction("users/userCreateRequested");
-const createUserFailed = createAction("users/createUserFailed");
 const userUpdateRequested = createAction("users/userUpdateRequested");
 
 export const login = ({ payload, redirect }) => async (dispatch) => {
@@ -90,8 +86,8 @@ export const login = ({ payload, redirect }) => async (dispatch) => {
   dispatch(authRequested());
   try {
     const data = await authService.login({ email, password });
-    dispatch(authRequestSuccess({ userId: data.localId }));
     localStorageService.setTokens(data);
+    dispatch(authRequestSuccess({ userId: data.userId }));
     history.push(redirect);
   } catch (error) {
     const { code, message } = error.response.data.error;
@@ -105,23 +101,14 @@ export const login = ({ payload, redirect }) => async (dispatch) => {
 };
 
 export const signUp =
-  ({ email, password, ...rest }) =>
+  (payload) =>
     async (dispatch) => {
       dispatch(authRequested());
       try {
-        const data = await authService.register({ email, password });
+        const data = await authService.register(payload);
         localStorageService.setTokens(data);
-        dispatch(authRequestSuccess({ userId: data.localId }));
-        dispatch(createUsers({
-          _id: data.localId,
-          email,
-          rate: getRandomInt(1, 5),
-          completedMeetings: getRandomInt(0, 200),
-          image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-            .toString(36)
-            .substring(7)}.svg`,
-          ...rest
-        }));
+        dispatch(authRequestSuccess({ userId: data.userId }));
+        history.push("/users");
       } catch (error) {
         dispatch(authRequestFailed(error.message));
       }
@@ -132,19 +119,6 @@ export const logOut = () => (dispatch) => {
   dispatch(userLoggedOut());
   history.push("/");
 };
-
-function createUsers(payload) {
-  return async function (dispatch) {
-    dispatch(userCreateRequested());
-    try {
-      const { content } = await userService.create(payload);
-      dispatch(userCreated(content));
-      history.push("/users");
-    } catch (error) {
-      dispatch(createUserFailed(error.message));
-    }
-  };
-}
 
 export function updateUserData(payload) {
   return async function (dispatch) {

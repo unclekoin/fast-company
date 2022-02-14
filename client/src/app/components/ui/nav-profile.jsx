@@ -5,12 +5,12 @@ import { getCurrentUserData } from "../../store/users";
 
 const NavProfile = () => {
   const currentUser = useSelector(getCurrentUserData());
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false);
   const toggleMenu = () => {
-    setIsOpen((prevState) => !prevState);
+    setOpen((prevState) => !prevState);
   };
 
-  if (!currentUser) return <h3>Loading...</h3>;
+  if (!currentUser) return <h4>Loading...</h4>;
 
   return (
     <div className="dropdown" onClick={toggleMenu}>
@@ -23,7 +23,7 @@ const NavProfile = () => {
           height="40"
         />
       </div>
-      <div className={`w-100 dropdown-menu ${isOpen ? "show" : ""}`}>
+      <div className={`w-100 dropdown-menu${isOpen ? " show" : ""}`}>
         <Link className="dropdown-item" to={`/users/${currentUser._id}`}>
           Профиль
         </Link>

@@ -1,52 +1,29 @@
-const addZero = (num) => {
-  return num < 10 ? "0" + String(num) : String(num);
-};
+export function displayDate(data) {
+  const date = new Date(data);
+  const dateNow = new Date();
+  const yearDif = dateNow.getFullYear() - date.getFullYear();
+  if (yearDif === 0) {
+    const dayDif = dateNow.getDay() - date.getDay();
+    if (dayDif === 0) {
+      const hourDif = dateNow.getHours() - date.getHours();
+      if (hourDif === 0) {
+        const minutesDif = dateNow.getMinutes() - date.getMinutes();
 
-const formatPhrase = (num) => {
-  if (String(num)[0] === "1" && (num < 10 || num > 20)) return "минута";
-  if (/[234]$/.test(String(num)) && (num < 10 || num > 20)) return "минуты";
+        if (minutesDif >= 0 && minutesDif < 5) return "1 минуту назад";
+        if (minutesDif >= 5 && minutesDif < 10) return "5 минут назад";
+        if (minutesDif >= 10 && minutesDif < 30) {
+          return "10 минут назад";
+        }
+        return "30 минут назад";
+      }
+      return `${date.getHours()}:${date.getMinutes()}`;
+    }
 
-  return "минут";
-};
-
-const getMonth = (index) => {
-  const months = [
-    "января",
-    "февраля",
-    "марта",
-    "апреля",
-    "мая",
-    "июня",
-    "июля",
-    "августа",
-    "сентября",
-    "октября",
-    "ноября",
-    "декабря"
-  ];
-
-  return months[index];
-};
-
-export const displayDate = (date) => {
-  date = typeof date === "number" ? date : Number(date);
-  const diff = Date.now() - date;
-  const year = new Date(date).getFullYear();
-  const month = new Date(date).getMonth();
-  const day = new Date(date).getDate();
-  const hours = new Date(date).getHours();
-  const min = new Date(date).getMinutes();
-
-  if (diff < 60000) {
-    return "меньше минуты назад";
-  } else if (diff <= 1.8e6) {
-    const min = Math.round(diff / 60000);
-    return `${min} ${formatPhrase(min)} назад`;
-  } else if (diff < 8.64e7) {
-    return `${addZero(hours)}:${addZero(min)}`;
-  } else if (diff < 3.154e10) {
-    return `${addZero(day)} ${getMonth(month)}`;
-  } else {
-    return `${addZero(day)} ${getMonth(month)} ${year} года`;
+    return `${date.getDay()} ${date.toLocaleString("default", {
+      month: "long"
+    })}`;
   }
-};
+  return (
+    date.getFullYear() + "." + (date.getMonth() + 1) + "_" + date.getDate()
+  );
+}

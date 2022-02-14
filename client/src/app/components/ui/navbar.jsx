@@ -24,6 +24,7 @@ const Navbar = () => {
             </li>
           )}
         </ul>
+
         <div className="d-flex">
           {isLoggedIn ? (
             <NavProfile />
@@ -33,6 +34,7 @@ const Navbar = () => {
             </Link>
           )}
         </div>
+
       </div>
     </nav>
   );
