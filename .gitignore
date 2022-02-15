@@ -25,7 +25,7 @@ yarn-error.log*
 
 .idea/
 .vscode/
-/server/config/default.json
+/server/config/
 /server/node_modules
 /client/node_modules
 /client/build

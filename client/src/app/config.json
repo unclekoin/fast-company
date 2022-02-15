@@ -1,5 +1,5 @@
 {
-  "apiEndpoint": "http://81.163.26.226/api",
+  "apiEndpoint": "http://localhost:8080/api",
   "firebaseEndpoint": "https://fast-company-ccb55-default-rtdb.europe-west1.firebasedatabase.app/",
   "isFirebase": false
 }
