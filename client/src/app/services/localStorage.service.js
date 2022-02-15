@@ -2,6 +2,7 @@ const TOKEN_KEY = "jwt-token";
 const REFRESH_KEY = "jwt-refresh-token";
 const EXPIRES_KEY = "jwt-expires";
 const USER_ID_KEY = "user-local-id";
+const FAVORITE_USERS = "favoriteUsers";
 
 export function setTokens({ refreshToken, accessToken, userId, expiresIn = 3600 }) {
   const expiresDate = new Date().getTime() + expiresIn * 1000;
@@ -32,6 +33,7 @@ export function removeAuthData() {
   localStorage.removeItem(REFRESH_KEY);
   localStorage.removeItem(USER_ID_KEY);
   localStorage.removeItem(EXPIRES_KEY);
+  localStorage.removeItem(FAVORITE_USERS);
 }
 
 const localStorageService = {
